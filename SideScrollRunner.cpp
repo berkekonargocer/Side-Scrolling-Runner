@@ -13,10 +13,16 @@ int main()
 	const auto* game = new Game();
 
 	InitWindow(game->SCREEN_HEIGHT, game->SCREEN_WIDTH, "Side Scroll Runner");
+	SetTargetFPS(144);
 
 	while(WindowShouldClose() == false)
 	{
-		
+		BeginDrawing();
+		ClearBackground(BLACK);
+
+
+
+		EndDrawing();
 	}
 
 }
