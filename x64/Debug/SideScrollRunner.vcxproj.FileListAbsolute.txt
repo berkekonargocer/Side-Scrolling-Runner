@@ -1,0 +1,3 @@
+D:\C++ Projects\SideScrollRunner\x64\Debug\SideScrollRunner.vcxproj.CopyComplete
+D:\C++ Projects\SideScrollRunner\x64\Debug\SideScrollRunner.exe
+D:\C++ Projects\SideScrollRunner\x64\Debug\raylib.dll
