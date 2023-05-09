@@ -23,22 +23,9 @@ public:
 	const float gravity = 0.5f;
 };
 
-class RunnerBoy
-{
-public:
-	Texture2D RBoyTexture2D = LoadTexture("Textures/RunnerBoy");
-	Vector2 Position;
-	Rectangle RBoyRectangle;
-
-	int MovementSpeed = 10;
-	float JumpVelocity = -15;
-	float Velocity_Y = 0;
-
-};
 
 int main()
 {
-	auto* runnerBoy = new RunnerBoy();
 	const auto* game = new Game();
 	auto* rectangle = new RectangleObject();
 
@@ -46,14 +33,23 @@ int main()
 	SetTargetFPS(144);
 
 	// ----------------------------------------- RUNNER BOY INIT --------------------------------------
-	runnerBoy->RBoyRectangle.width = runnerBoy->RBoyTexture2D.width / 6;
-	runnerBoy->RBoyRectangle.height = runnerBoy->RBoyTexture2D.height;
 
-	runnerBoy->RBoyRectangle.x = 0;
-	runnerBoy->RBoyRectangle.y = 0;
+	Texture2D RBoyTexture2D = LoadTexture("Textures/RunnerBoy.png");
+	Vector2 RunnerBoyPosition;
+	Rectangle RBoyRectangle;
 
-	runnerBoy->Position.x = game->SCREEN_WIDTH / 4 - runnerBoy->RBoyRectangle.width / 2;
-	runnerBoy->Position.y = game->SCREEN_HEIGHT;
+	const float RunnerBoyMovementSpeed = 10;
+	const float RunnerBoyJumpVelocity = -15;
+	float Velocity_Y = 0;
+
+	RBoyRectangle.width = RBoyTexture2D.width / 6;
+	RBoyRectangle.height = RBoyTexture2D.height;
+
+	RBoyRectangle.x = 0;
+	RBoyRectangle.y = 0;
+
+	RunnerBoyPosition.x = game->SCREEN_WIDTH / 4 - RBoyRectangle.width / 2;
+	RunnerBoyPosition.y = game->SCREEN_HEIGHT - RBoyRectangle.height;
 	// ------------------------------------------------------------------------------------------------
 
 	// ------------------------------------------ GAME LOOP START -------------------------------------
@@ -66,40 +62,40 @@ int main()
 
 
 		// ----------------------------------- SET RECTANGLE EDGES ------------------------------------
-		const int rectangleUpperYEdge = rectangle->CurrentYPosition;
-		const int rectangleBottomYEdge = rectangle->CurrentYPosition + rectangle->Height;
-		const int rectangleRightXEdge = rectangle->CurrentXPosition + rectangle->Width;
-		const int rectangleLeftXEdge = rectangle->CurrentXPosition;
+		const float runnerBoyUpperYEdge = RunnerBoyPosition.y;
+		const float runnerBoyBottomYEdge = RunnerBoyPosition.y;
+		const float runnerBoyRightXEdge = RunnerBoyPosition.x;
+		const float runnerBoyLeftXEdge = RunnerBoyPosition.x;
 		// --------------------------------------------------------------------------------------------
 
 
 		// ----------------------------------- SET RECTANGLE EDGES ------------------------------------
-		const bool isOnTop = rectangleUpperYEdge <= 0;
-		const bool isOnBottom = rectangleBottomYEdge >= game->SCREEN_HEIGHT;
-		const bool isOnRightEdge = rectangleRightXEdge >= game->SCREEN_WIDTH;
-		const bool isOnLeftEdge = rectangleLeftXEdge <= 0;
+		const bool isOnTop = runnerBoyUpperYEdge <= 0;
+		const bool isOnBottom = runnerBoyBottomYEdge >= game->SCREEN_HEIGHT - RBoyRectangle.height;
+		const bool isOnRightEdge = runnerBoyRightXEdge >= game->SCREEN_WIDTH - RBoyRectangle.width;
+		const bool isOnLeftEdge = runnerBoyLeftXEdge <= 0;
 		// --------------------------------------------------------------------------------------------
 
 
 		// ------------------------------------- MOVEMENT INPUTS --------------------------------------
 		if (IsKeyDown(KEY_A) && !isOnLeftEdge)
 		{
-			rectangle->CurrentXPosition -= rectangle->MovementSpeed;
+			RunnerBoyPosition.x -= RunnerBoyMovementSpeed;
 		}
 		if (IsKeyDown(KEY_D) && !isOnRightEdge)
 		{
-			rectangle->CurrentXPosition += rectangle->MovementSpeed;
+			RunnerBoyPosition.x += RunnerBoyMovementSpeed;
 		}
 		// --------------------------------------------------------------------------------------------
 
 		// ------------------------------ GROUNDED CHECK AND ADD GRAVITY ------------------------------
 		if (isOnBottom)
 		{
-			rectangle->Velocity_Y = 0;
+			Velocity_Y = 0;
 		}
 		else
 		{
-			rectangle->Velocity_Y += game->gravity;
+			Velocity_Y += game->gravity;
 		}
 		// --------------------------------------------------------------------------------------------
 
@@ -107,17 +103,16 @@ int main()
 		if (IsKeyPressed(KEY_SPACE) && isOnBottom)
 		{
 			
-			rectangle->Velocity_Y += rectangle->JumpVelocity;
+			Velocity_Y += RunnerBoyJumpVelocity;
 		}
 		// --------------------------------------------------------------------------------------------
 
 		// --------------------------------- APPLY VERTICAL VELOCITY ----------------------------------
-		rectangle->CurrentYPosition += rectangle->Velocity_Y;
+		RunnerBoyPosition.y += Velocity_Y;
 		// --------------------------------------------------------------------------------------------
 
 
-		
-		DrawRectangle(rectangle->CurrentXPosition, rectangle->CurrentYPosition, rectangle->Width, rectangle->Height, rectangle->ObjectColor);
+		DrawTextureRec(RBoyTexture2D, RBoyRectangle, RunnerBoyPosition, WHITE);
 
 		// ------------------------------------- GAME LOGIC END ---------------------------------------
 
@@ -125,6 +120,6 @@ int main()
 		EndDrawing();
 	}
 	// ----------------------------------------- GAME LOOP END ----------------------------------------
-
+	UnloadTexture(RBoyTexture2D);
 	CloseWindow();
 }
