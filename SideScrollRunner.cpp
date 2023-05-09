@@ -1,15 +1,6 @@
 #include <iostream>
 #include  "raylib.h"
 
-class Game
-{
-public:
-	const int SCREEN_WIDTH = 1280;
-	const int SCREEN_HEIGHT = 720;
-
-	const int gravity = 1.0f;
-};
-
 class RectangleObject
 {
 public:
@@ -19,17 +10,51 @@ public:
 	int CurrentYPosition = 720 - Height;
 	Color ObjectColor{ PURPLE };
 	int MovementSpeed = 10;
-	int Velocity_Y = 0;
+	float JumpVelocity = -15;
+	float Velocity_Y = 0;
+};
+
+class Game
+{
+public:
+	const int SCREEN_WIDTH = 1280;
+	const int SCREEN_HEIGHT = 720;
+
+	const float gravity = 0.5f;
+};
+
+class RunnerBoy
+{
+public:
+	Texture2D RBoyTexture2D = LoadTexture("Textures/RunnerBoy");
+	Vector2 Position;
+	Rectangle RBoyRectangle;
+
+	int MovementSpeed = 10;
+	float JumpVelocity = -15;
+	float Velocity_Y = 0;
+
 };
 
 int main()
 {
+	auto* runnerBoy = new RunnerBoy();
 	const auto* game = new Game();
 	auto* rectangle = new RectangleObject();
 
 	InitWindow(game->SCREEN_WIDTH, game->SCREEN_HEIGHT, "Side Scroll Runner");
 	SetTargetFPS(144);
 
+	// ----------------------------------------- RUNNER BOY INIT --------------------------------------
+	runnerBoy->RBoyRectangle.width = runnerBoy->RBoyTexture2D.width / 6;
+	runnerBoy->RBoyRectangle.height = runnerBoy->RBoyTexture2D.height;
+
+	runnerBoy->RBoyRectangle.x = 0;
+	runnerBoy->RBoyRectangle.y = 0;
+
+	runnerBoy->Position.x = game->SCREEN_WIDTH / 4 - runnerBoy->RBoyRectangle.width / 2;
+	runnerBoy->Position.y = game->SCREEN_HEIGHT;
+	// ------------------------------------------------------------------------------------------------
 
 	// ------------------------------------------ GAME LOOP START -------------------------------------
 	while (!WindowShouldClose())
@@ -81,7 +106,8 @@ int main()
 		// --------------------------------------- JUMP INPUT -----------------------------------------
 		if (IsKeyPressed(KEY_SPACE) && isOnBottom)
 		{
-			rectangle->Velocity_Y -= 20;
+			
+			rectangle->Velocity_Y += rectangle->JumpVelocity;
 		}
 		// --------------------------------------------------------------------------------------------
 
@@ -90,6 +116,7 @@ int main()
 		// --------------------------------------------------------------------------------------------
 
 
+		
 		DrawRectangle(rectangle->CurrentXPosition, rectangle->CurrentYPosition, rectangle->Width, rectangle->Height, rectangle->ObjectColor);
 
 		// ------------------------------------- GAME LOGIC END ---------------------------------------
