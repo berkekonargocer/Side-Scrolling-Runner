@@ -1,18 +1,18 @@
 #include <iostream>
 #include  "raylib.h"
 
-class RectangleObject
-{
-public:
-	int Width = 20;
-	int Height = 30;
-	int CurrentXPosition = 640;
-	int CurrentYPosition = 720 - Height;
-	Color ObjectColor{ PURPLE };
-	int MovementSpeed = 10;
-	float JumpVelocity = -15;
-	float Velocity_Y = 0;
-};
+//class RectangleObject
+//{
+//public:
+//	int Width = 20;
+//	int Height = 30;
+//	int CurrentXPosition = 640;
+//	int CurrentYPosition = 720 - Height;
+//	Color ObjectColor{ PURPLE };
+//	int MovementSpeed = 10;
+//	float JumpVelocity = -15;
+//	float Velocity_Y = 0;
+//};
 
 class Game
 {
@@ -20,14 +20,14 @@ public:
 	const int SCREEN_WIDTH = 1280;
 	const int SCREEN_HEIGHT = 720;
 
-	const float gravity = 0.5f;
+	const int gravity = 1750;
 };
 
 
 int main()
 {
 	const auto* game = new Game();
-	auto* rectangle = new RectangleObject();
+	//auto* rectangle = new RectangleObject();
 
 	InitWindow(game->SCREEN_WIDTH, game->SCREEN_HEIGHT, "Side Scroll Runner");
 	SetTargetFPS(144);
@@ -38,8 +38,8 @@ int main()
 	Vector2 RunnerBoyPosition;
 	Rectangle RBoyRectangle;
 
-	const float RunnerBoyMovementSpeed = 10;
-	const float RunnerBoyJumpVelocity = -15;
+	constexpr float runnerBoyMovementSpeed = 500;
+	constexpr int runnerBoyJumpVelocity = -550;
 	float Velocity_Y = 0;
 
 	RBoyRectangle.width = RBoyTexture2D.width / 6;
@@ -55,6 +55,8 @@ int main()
 	// ------------------------------------------ GAME LOOP START -------------------------------------
 	while (!WindowShouldClose())
 	{
+		float deltaTime = GetFrameTime();
+
 		BeginDrawing();
 		ClearBackground(BLACK);
 
@@ -80,11 +82,11 @@ int main()
 		// ------------------------------------- MOVEMENT INPUTS --------------------------------------
 		if (IsKeyDown(KEY_A) && !isOnLeftEdge)
 		{
-			RunnerBoyPosition.x -= RunnerBoyMovementSpeed;
+			RunnerBoyPosition.x -= runnerBoyMovementSpeed * deltaTime;
 		}
 		if (IsKeyDown(KEY_D) && !isOnRightEdge)
 		{
-			RunnerBoyPosition.x += RunnerBoyMovementSpeed;
+			RunnerBoyPosition.x += runnerBoyMovementSpeed * deltaTime;
 		}
 		// --------------------------------------------------------------------------------------------
 
@@ -95,7 +97,7 @@ int main()
 		}
 		else
 		{
-			Velocity_Y += game->gravity;
+			Velocity_Y += game->gravity * deltaTime;
 		}
 		// --------------------------------------------------------------------------------------------
 
@@ -103,12 +105,12 @@ int main()
 		if (IsKeyPressed(KEY_SPACE) && isOnBottom)
 		{
 			
-			Velocity_Y += RunnerBoyJumpVelocity;
+			Velocity_Y += runnerBoyJumpVelocity;
 		}
 		// --------------------------------------------------------------------------------------------
 
 		// --------------------------------- APPLY VERTICAL VELOCITY ----------------------------------
-		RunnerBoyPosition.y += Velocity_Y;
+		RunnerBoyPosition.y += Velocity_Y * deltaTime;
 		// --------------------------------------------------------------------------------------------
 
 
